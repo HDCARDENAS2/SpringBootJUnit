@@ -1,17 +1,16 @@
 package com.learn.junit.service.impl;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.learn.junit.dto.UserDTO;
 import com.learn.junit.entity.UserEntity;
@@ -19,12 +18,11 @@ import com.learn.junit.helper.UserHelper;
 import com.learn.junit.mapper.UserMapper;
 import com.learn.junit.repository.UserRepository;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
 
 	@InjectMocks
-	private UserServiceImpl userService;
+    private UserServiceImpl userService;
 	@Mock
 	private UserMapper userMapper;
 	@Mock
@@ -34,7 +32,7 @@ public class UserServiceImplTest {
 	private UserDTO userDTOCreated = UserHelper.createdUserDTO();
 	private UserEntity userEntity = UserHelper.newUserEntity();
 	private UserEntity userEntityCreated = UserHelper.createdUserEntity();
-		
+
 	@Test
 	@DisplayName("Save User Test")
 	void testSave() {
