@@ -3,7 +3,14 @@ package com.learn.junit.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,12 +29,12 @@ import com.learn.junit.repository.UserRepository;
 public class UserServiceImplTest {
 
 	@InjectMocks
-    private UserServiceImpl userService;
+	private UserServiceImpl userService;
 	@Mock
 	private UserMapper userMapper;
 	@Mock
-    private UserRepository userRepository;
-	
+	private UserRepository userRepository;
+
 	private UserDTO userDTO = UserHelper.newUserDTO();
 	private UserDTO userDTOCreated = UserHelper.createdUserDTO();
 	private UserEntity userEntity = UserHelper.newUserEntity();
@@ -36,15 +43,32 @@ public class UserServiceImplTest {
 	@Test
 	@DisplayName("Save User Test")
 	void testSave() {
-	
+
 		when(userMapper.toEntity(any(UserDTO.class))).thenReturn(userEntity);
 		when(userRepository.save(any(UserEntity.class))).thenReturn(userEntityCreated);
 		when(userMapper.toDTO(any(UserEntity.class))).thenReturn(userDTOCreated);
-	    UserDTO userDTOReturn = userService.save(userDTO);
+		UserDTO userDTOReturn = userService.save(userDTO);
 		assertNotNull(userDTOReturn);
-		assertEquals(userDTOReturn.getId(),userEntityCreated.getId());
-	
-		
+		assertEquals(userDTOReturn.getId(), userEntityCreated.getId());
+
 	}
 
+	@Test
+	@DisplayName("delete User Test")
+	void testDelete() {
+		doNothing().when(userRepository).delete(any(UserEntity.class));
+		when(userMapper.toEntity(any(UserDTO.class))).thenReturn(userEntity);
+		userService.delete(userDTOCreated);
+		verify(userRepository, times(1)).delete(any(UserEntity.class));
+	}
+
+	@Test
+	@DisplayName("findByEmail User Test")
+	void testFindByEmail() {
+		when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(userEntity));
+
+		when(userMapper.toDTO(any(UserEntity.class))).thenReturn(userDTOCreated);
+		UserDTO userDTO = userService.findByEmail("jimenezjesuz@outlook.com");
+		assertNotNull(userDTO);
+	}
 }
