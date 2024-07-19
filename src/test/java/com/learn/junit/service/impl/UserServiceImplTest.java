@@ -3,6 +3,8 @@ package com.learn.junit.service.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
@@ -10,6 +12,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -70,5 +76,45 @@ public class UserServiceImplTest {
 		when(userMapper.toDTO(any(UserEntity.class))).thenReturn(userDTOCreated);
 		UserDTO userDTO = userService.findByEmail("jimenezjesuz@outlook.com");
 		assertNotNull(userDTO);
+	}
+
+	@Test
+	@DisplayName("findById User Test")
+	void testfindById() {
+		when(userRepository.findById(anyInt())).thenReturn(Optional.of(userEntity));
+
+		when(userMapper.toDTO(any(UserEntity.class))).thenReturn(userDTOCreated);
+		UserDTO userDTO = userService.findById(1);
+		assertNotNull(userDTO);
+	}
+
+	@Test
+	@DisplayName("findAll User Test")
+	void testFindAll() {
+		when(userRepository.findAll()).thenReturn(Collections.singletonList(userEntityCreated));
+
+		when(userMapper.toDTOList(anyList())).thenReturn(Collections.singletonList(userDTOCreated));
+		List<UserDTO> list = userService.findAll();
+		assertNotNull(list);
+	}
+
+	@Test
+	@DisplayName("findUsersCreatedToday User Test")
+	void testFindUsersCreatedToday() {
+		when(userRepository.findUsersCreatedToday()).thenReturn(Collections.singletonList(userEntityCreated));
+
+		when(userMapper.toDTOList(anyList())).thenReturn(Collections.singletonList(userDTOCreated));
+		List<UserDTO> list = userService.findUsersCreatedToday();
+		assertNotNull(list);
+	}
+
+	@Test
+	@DisplayName("findById User Test")
+	void testFindUsersCreatedByYear() {
+		when(userRepository.findUsersCreatedByYear(anyInt())).thenReturn(Collections.singletonList(userEntityCreated));
+
+		when(userMapper.toDTOList(anyList())).thenReturn(Collections.singletonList(userDTOCreated));
+		List<UserDTO> list = userService.findUsersCreatedByYear(1995);
+		assertNotNull(list);
 	}
 }
