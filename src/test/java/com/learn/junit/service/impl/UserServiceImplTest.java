@@ -109,7 +109,7 @@ public class UserServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("findById User Test")
+	@DisplayName("findUsersCreatedByYear User Test")
 	void testFindUsersCreatedByYear() {
 		when(userRepository.findUsersCreatedByYear(anyInt())).thenReturn(Collections.singletonList(userEntityCreated));
 
