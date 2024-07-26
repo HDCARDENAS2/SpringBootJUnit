@@ -1,9 +1,12 @@
 package com.learn.junit.service.control;
 
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @WebMvcTest(value = UserController.class)
 @ActiveProfiles(profiles = "test")
-@ContextConfiguration(classes = {UserController.class, UserController.class})
+@ContextConfiguration(classes = { UserController.class, UserController.class })
 public class UserControllerTest {
 
     @Autowired
@@ -40,7 +43,7 @@ public class UserControllerTest {
     void setup() {
 
         mockMvc = MockMvcBuilders.standaloneSetup(new UserController(userService)).build();
-   
+
     }
 
     @Test
@@ -56,6 +59,28 @@ public class UserControllerTest {
         when(userService.findById(1)).thenReturn(null);
 
         mockMvc.perform(get("/user/1")).andExpect(status().isNoContent());
+    }
+
+    @Test
+    void testFindAllUsers() throws Exception {
+        when(userService.findAll()).thenReturn(Collections.singletonList(userDTO));
+
+        mockMvc.perform(get("/user")).andExpect(status().isOk());
+    }
+    
+    
+    @Test
+    void testFindUsersCreatedToday() throws Exception {
+        when(userService.findUsersCreatedToday()).thenReturn(Collections.singletonList(userDTO));
+
+        mockMvc.perform(get("/user/created-today")).andExpect(status().isOk());
+    }
+
+    @Test
+    void testFindUsersCreatedByYear() throws Exception {
+        when(userService.findUsersCreatedByYear(anyInt())).thenReturn(Collections.singletonList(userDTO));
+
+        mockMvc.perform(get("/user/created-by-year/1995")).andExpect(status().isOk());
     }
 
 }
